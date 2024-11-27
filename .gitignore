@@ -1,0 +1,17 @@
+# Exclude __pycache__ directories
+__pycache__/
+
+# Exclude output directory
+# output/
+
+# Exclude mixed_colors folders
+mixed_colors/
+mixed_colors_shapes/
+
+# General Python exclusions
+*.pyc
+*.pyo
+*.pyd
+
+# MacOS-specific files
+.DS_Store
