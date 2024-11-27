@@ -28,8 +28,11 @@ The following results were obtained by training the WEV-QCNN and modified CO-QCN
 
 ### **Learning Curves**
 ![image](https://github.com/user-attachments/assets/da27e3cf-d05b-4f40-91e0-8a184c0ca111)
+---
 ![image](https://github.com/user-attachments/assets/bdf54a79-b21e-4f92-bf25-188c6f17b26a)
+---
 ![image](https://github.com/user-attachments/assets/524debe1-f608-49b8-b7dc-aa1b8dd2568a)
+---
 ![image](https://github.com/user-attachments/assets/42669188-afa2-4487-b45d-090d16f9b049)
 
 
