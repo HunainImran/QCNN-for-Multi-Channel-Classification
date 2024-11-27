@@ -44,6 +44,7 @@ print("Select models to run sequentially (y/n): ")
 model1 = input('CO-QCNN (U1): ')
 model2 = input('WEV-QCNN (U1): ')
 model3 = input('Control QCNN (U1): ')
+model4 = input('Modified CO-QCNN (U1): ')
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 # choose dataset to train on
@@ -91,7 +92,12 @@ else:
 if model3 == "y":
     control_U1_QCNN = True 
 else:
-    control_U1_QCNN = False 
+    control_U1_QCNN = False
+if model4 == "y":
+    MODIFIED_CO_U1_QCNN = True 
+else:
+    MODIFIED_CO_U1_QCNN = False  
+
         
 
 #############################
@@ -105,6 +111,9 @@ if WEV_U1_QCNN:
 
 if control_U1_QCNN:
     models_to_train.append(models.QCNN_U1_control_model(datatype,classes))
+
+if MODIFIED_CO_U1_QCNN:
+    models_to_train.append(models.MODIFIED_CO_U1_QCNN_model(datatype,classes))
       
 #############################
 
