@@ -30,7 +30,7 @@ The following results were obtained by training the Control-QCNN, WEV-QCNN, CO-Q
 ---
 
 ### **Learning Curves**
-![image](https://github.com/user-attachments/assets/da27e3cf-d05b-4f40-91e0-8a184c0ca111)
+![image](https://github.com/user-attachments/assets/2ca7f33c-2319-4f16-a45f-532134617a96)
 
 ---
 ![image](https://github.com/user-attachments/assets/bdf54a79-b21e-4f92-bf25-188c6f17b26a)
