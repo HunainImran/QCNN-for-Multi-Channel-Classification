@@ -1,4 +1,4 @@
-# Quantum Convolutional Neural Networks for Multi-Channel Image Processing
+# Quantum Convolutional Neural Networks for Multi-Channel Data
 
 
 ## **Abstract**
