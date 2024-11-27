@@ -2,7 +2,7 @@
 
 
 ## **Abstract**
-This repository implements the paper ["Quantum Convolutional Neural Networks for Multi-Channel Image Processing"](link_to_paper) using TensorFlow Quantum. The project demonstrates how quantum computing techniques can be applied to image processing tasks, focusing on multi-channel datasets like CIFAR-10. This implementation includes the Weighted Entanglement Variance (WEV) model and the Controlled Output (CO) model, with a modified version of the CO circuit. The modification entangles all four qubits with the ancillary qubit, enhancing phase entanglement mechanisms. This repository explores their performance against control QCNN.
+Quantum computing holds promise for accelerating machine learning, particularly in tasks like image classification using quantum convolutional neural networks (QCNNs). However, existing QCNNs struggle with multi-channel data, limiting their applicability to simple inputs. This repository implements the paper ["Quantum Convolutional Neural Networks for Multi-Channel Image Processing"](link_to_paper) using TensorFlow Quantum. In this work, a variety of hardware-adaptable quantum circuit ansatzes are presented for use as convolutional kernels, and demonstrated that the quantum neural networks outperform existing QCNNs on classification tasks involving multi-channel data. This implementation includes the Weighted Entanglement Variance (WEV) model, the Channel Overwrite (CO) model, and a modified version of the CO model. The modification entangles all four qubits with the ancillary qubit, enhancing phase entanglement mechanisms. This repository explores their performance against control QCNN.
 
 ---
 
