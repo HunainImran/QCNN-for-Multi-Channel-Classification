@@ -12,13 +12,15 @@ The project implements several quantum convolutional circuits, including the CO 
 
 ![image](https://github.com/user-attachments/assets/fb93305d-28b0-4f0d-9a67-5108a8462dde)
 
+---
+
 ### **Modified Channel Overwrite (CO) circuit**
 ![IMG-20241127-WA0035](https://github.com/user-attachments/assets/77cbed3f-0c9c-48af-9a50-3b391f1d286e)
 
 ---
 
 ## **Results**
-The following results were obtained by training the WEV-QCNN and modified CO-QCNN models on the CIFAR-10 using 3 classes:
+The following results were obtained by training the Control-QCNN, WEV-QCNN, CO-QCNN, and modified CO-QCNN models on the CIFAR-10 using 3 classes:
 
 ### **Test Accuracy:**
 - **CONTROL-QCNN:** ~64.6% (on 3-class CIFAR-10)
@@ -26,12 +28,17 @@ The following results were obtained by training the WEV-QCNN and modified CO-QCN
 - **CO-QCNN:** ~80.03% (on 3-class CIFAR-10)
 - **Modified CO-QCNN:** ~81.6% (on 3-class CIFAR-10)
 
+---
+
 ### **Learning Curves**
 ![image](https://github.com/user-attachments/assets/da27e3cf-d05b-4f40-91e0-8a184c0ca111)
+
 ---
 ![image](https://github.com/user-attachments/assets/bdf54a79-b21e-4f92-bf25-188c6f17b26a)
+
 ---
 ![image](https://github.com/user-attachments/assets/524debe1-f608-49b8-b7dc-aa1b8dd2568a)
+
 ---
 ![image](https://github.com/user-attachments/assets/42669188-afa2-4487-b45d-090d16f9b049)
 
@@ -94,7 +101,15 @@ Install the required libraries:
 pip install -r requirements.txt
 ```
 
-### **3. Run the Training Script**
+### **3.1 (Optional)**
+To generate the synthetic Color Dataset to test the models:
+```bash
+python create_noisy_colors.py
+```
+
+### **3.2 Run the Training Script**
+
+
 To train a model, execute the following command:
 ```bash
 python train.py
@@ -137,8 +152,7 @@ Follow the prompts as described above.
 - **Paper Implemented:** ["Quantum Convolutional Neural Networks for Multi-Channel Image Processing"](link_to_paper)
 - **TensorFlow Quantum Documentation:** [TFQ Docs](https://www.tensorflow.org/quantum)
 - **Cirq Documentation:** [Cirq Docs](https://quantumai.google/cirq)
+- **Dataset:** CIFAR-10
 
 ---
-
-**Author:** [Your Name]
 
