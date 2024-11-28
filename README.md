@@ -54,7 +54,6 @@ The detailed project report includes:
 ### **Access the Report**
 [View the Project Report](docs/project_report.pdf)
 
-> **Note:** Place the project report in a `docs/` folder in your repository’s root directory for the above link to work correctly.
 
 ---
 
