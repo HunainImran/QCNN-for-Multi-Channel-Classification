@@ -27,7 +27,6 @@ class U1_circuit(tf.keras.layers.Layer):
         self.kernel_regularizer = kernel_regularizer
 
     # define function to return a new learnable parameter, save all parameters
-    # in self.learning_params
     def get_new_param(self):
 
         # generate symbol for parameter
@@ -158,17 +157,11 @@ class U1_circuit(tf.keras.layers.Layer):
                                       regularizer=self.kernel_regularizer)
 
         # create circuit tensor containing values for each convolution step
-        # kernel will step num_x*num_y times
         self.circuit_tensor = tfq.convert_to_tensor([self.circuit] * self.num_x * self.num_y)
     # define a function to return a tensor of expectation values for each stride
-    # for each data point in the batch
     def get_expectations(self, input_data, controller, circuit_batch):
 
-        # input size: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-        # controller shape: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
 
-        # concatenate input data and controller hoirzontally so that format is
-        # commensurate with that of self.params
         input_data = tf.concat([input_data, controller], 1)
 
         # get expectation value for each data point for each batch for a kernel
@@ -176,8 +169,7 @@ class U1_circuit(tf.keras.layers.Layer):
                                                symbol_names=self.params,
                                                symbol_values=input_data,
                                                operators=self.measurement)
-        # reshape tensor of expectation values to
-        # shape [batch_size, n_horizontal_strides, n_vertical_strides,n_input_channels] and return
+
         output = tf.reshape(output, shape=[-1, self.num_x, self.num_y])
         return output
     # define keras backend function to stride kernel and collect data
@@ -186,7 +178,7 @@ class U1_circuit(tf.keras.layers.Layer):
         
         inputs = normalize_tensor_by_index(inputs,self.datatype)   
         
-        # define dummy variable to check if we are collecting data for first step
+
         stack_set = None
 
         # stride and collect data from input image
@@ -194,7 +186,7 @@ class U1_circuit(tf.keras.layers.Layer):
             for j in range(self.num_y):
 
                 # collecting image data superimposed with kernel
-                # size = [batch_size, output_height, output_width, n_input_channels]
+
                 slice_part = tf.slice(inputs, [0, i, j, 0], [-1, 2, 2, -1])
 
                 # reshape to [batch_size, n_strides, filter_size, filter_size, n_input_channels]
@@ -212,7 +204,7 @@ class U1_circuit(tf.keras.layers.Layer):
         stack_set = tf.transpose(stack_set, perm=[0, 1, 4, 2, 3])
 
         # reshape to [batch_size*n_strides,n_input_channels*filter_size*filter_size]
-        # each column corresponds to kernel's view of image, rows are ordered
+
         stack_set = tf.reshape(stack_set, shape=[-1, self.n_input_channels*(2**2)])
 
         # create new tensor by tiling circuit values for each data point in batch
@@ -226,18 +218,17 @@ class U1_circuit(tf.keras.layers.Layer):
         for i in range(self.n_kernels):
 
             # create new tensor by tiling kernel values for each stride for each
-            # data point in the batch
+
             controller = tf.tile(self.kernel[i], [tf.shape(inputs)[0]*self.num_x*self.num_y, 1])
 
             # append to a list the expectations for all input data in the batch,
-            # outputs is of shape [batch_size, n_horizontal_strides, n_vertical_strides]
+
             outputs.append(self.get_expectations(stack_set, controller, circuit_batch))
 
         # stack the expectation values for each kernel
-        # shape is [batch_size, n_horizontal_strides, n_vertical_strides, n_kernels]
+
         output_tensor = tf.stack(outputs, axis=3)
 
-        # take arccos of expectation and divide by pi to un-embed
         # if values are less than -1 or greater than 1, make -1 or 1, respectively
         output_tensor = tf.math.acos(tf.clip_by_value(output_tensor, -1+1e-5, 1-1e-5)) / np.pi
 
@@ -245,7 +236,6 @@ class U1_circuit(tf.keras.layers.Layer):
         return self.activation(output_tensor)
 
 ####U1 MODIFIED CIRCUIT WITH MORE PHASE ENTANGLEMENT BETWEEN THE ANCILLARY QUBIT AND THE THE REST OF THE PIXEL QUBITS####
-# define a keras layer class to contain the quantum convolutional layer
 class U1_Modified_circuit(tf.keras.layers.Layer):
 
     # initialize class
@@ -327,6 +317,7 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
 
         # deposits quantum phase onto the ancilla
         def Q_deposit(self,qubits,ancilla):
+          # entangle all the working qubits with the ancilla
           self.circuit.append(cirq.CZPowGate(exponent=self.get_new_param())(qubits[0], qubit_registers[0][ancilla]))
           self.circuit.append(cirq.CZPowGate(exponent=self.get_new_param())(qubits[1], qubit_registers[0][ancilla]))
           self.circuit.append(cirq.CZPowGate(exponent=self.get_new_param())(qubits[2], qubit_registers[0][ancilla]))
@@ -398,17 +389,10 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
                                       regularizer=self.kernel_regularizer)
 
         # create circuit tensor containing values for each convolution step
-        # kernel will step num_x*num_y times
         self.circuit_tensor = tfq.convert_to_tensor([self.circuit] * self.num_x * self.num_y)
     # define a function to return a tensor of expectation values for each stride
-    # for each data point in the batch
     def get_expectations(self, input_data, controller, circuit_batch):
 
-        # input size: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-        # controller shape: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-
-        # concatenate input data and controller hoirzontally so that format is
-        # commensurate with that of self.params
         input_data = tf.concat([input_data, controller], 1)
 
         # get expectation value for each data point for each batch for a kernel
@@ -416,8 +400,7 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
                                                symbol_names=self.params,
                                                symbol_values=input_data,
                                                operators=self.measurement)
-        # reshape tensor of expectation values to
-        # shape [batch_size, n_horizontal_strides, n_vertical_strides,n_input_channels] and return
+
         output = tf.reshape(output, shape=[-1, self.num_x, self.num_y])
         return output
     # define keras backend function to stride kernel and collect data
@@ -434,13 +417,11 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
             for j in range(self.num_y):
 
                 # collecting image data superimposed with kernel
-                # size = [batch_size, output_height, output_width, n_input_channels]
                 slice_part = tf.slice(inputs, [0, i, j, 0], [-1, 2, 2, -1])
 
                 # reshape to [batch_size, n_strides, filter_size, filter_size, n_input_channels]
                 slice_part = tf.reshape(slice_part, shape=[-1, 1, 2, 2, self.n_input_channels])
 
-                # if this is first stride, define new variable
                 if stack_set == None:
                     stack_set = slice_part
 
@@ -452,7 +433,6 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
         stack_set = tf.transpose(stack_set, perm=[0, 1, 4, 2, 3])
 
         # reshape to [batch_size*n_strides,n_input_channels*filter_size*filter_size]
-        # each column corresponds to kernel's view of image, rows are ordered
         stack_set = tf.reshape(stack_set, shape=[-1, self.n_input_channels*(2**2)])
 
         # create new tensor by tiling circuit values for each data point in batch
@@ -465,19 +445,12 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
         outputs = []
         for i in range(self.n_kernels):
 
-            # create new tensor by tiling kernel values for each stride for each
-            # data point in the batch
             controller = tf.tile(self.kernel[i], [tf.shape(inputs)[0]*self.num_x*self.num_y, 1])
 
-            # append to a list the expectations for all input data in the batch,
-            # outputs is of shape [batch_size, n_horizontal_strides, n_vertical_strides]
             outputs.append(self.get_expectations(stack_set, controller, circuit_batch))
 
         # stack the expectation values for each kernel
-        # shape is [batch_size, n_horizontal_strides, n_vertical_strides, n_kernels]
         output_tensor = tf.stack(outputs, axis=3)
-
-        # take arccos of expectation and divide by pi to un-embed
         # if values are less than -1 or greater than 1, make -1 or 1, respectively
         output_tensor = tf.math.acos(tf.clip_by_value(output_tensor, -1+1e-5, 1-1e-5)) / np.pi
 
@@ -485,7 +458,6 @@ class U1_Modified_circuit(tf.keras.layers.Layer):
         return self.activation(output_tensor)
 
 class Q_U1_control(tf.keras.layers.Layer):
-    # Inspired by https://github.com/Menborong/Simple-QCNN
 
     # initialize class
     def __init__(self, n_kernels, datatype, padding=False, classical_weights=False, activation=None, name=None, kernel_regularizer=None, **kwargs):
@@ -527,10 +499,8 @@ class Q_U1_control(tf.keras.layers.Layer):
         # intitialize circuit
         self.circuit = cirq.Circuit()
 
-        # arbitrarily generate a symbol for each qubit
         input_params = [sympy.symbols('a%d' %i) for i in range(n_pixels)]
 
-        # EMBED: tag each qubit with placeholder parameter, feed each to Pauli X gate
         for i, qubit in enumerate(cirq_qubits):
             self.circuit.append(cirq.rx(np.pi*input_params[i])(qubit))
 
@@ -571,33 +541,22 @@ class Q_U1_control(tf.keras.layers.Layer):
         if self.classical_weights:
             self.channel_weights = self.add_weight(name="channel_w",
                                           shape=[self.num_x,self.num_y,self.n_input_channels],
-                                          #initializer=tf.keras.initializers.glorot_normal(seed=42),
-                                          #initializer=tf.keras.initializers.Ones(),
                                           initializer=tf.keras.initializers.RandomNormal(mean=1.0,stddev=0.1,seed=42),
                                           regularizer=self.kernel_regularizer)
         
             self.channel_bias = self.add_weight(name="channel_b",
                                           shape=[self.num_x,self.num_y,self.n_input_channels],
-                                          #initializer=tf.keras.initializers.glorot_normal(seed=42),
-                                          #initializer=tf.keras.initializers.Zeros(),
                                           initializer=tf.keras.initializers.RandomNormal(mean=0.0,stddev=0.1,seed=42),
                                           regularizer=self.kernel_regularizer)
 
 
 
         # create circuit tensor containing values for each convolution step
-        # kernel will step num_x*num_y*n_input_channels times
         self.circuit_tensor = tfq.convert_to_tensor([self.circuit] * self.num_x * self.num_y * self.n_input_channels)
 
     # define a function to return a tensor of expectation values for each stride
-    # for each data point in the batch
     def get_expectations(self, input_data, controller, circuit_batch):
 
-        # input size: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-        # controller shape: [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-
-        # concatenate input data and controller hoirzontally so that format is
-        # commensurate with that of self.params
         input_data = tf.concat([input_data, controller], 1)
 
         # get expectation value for each data point for each batch for a kernel
@@ -605,8 +564,7 @@ class Q_U1_control(tf.keras.layers.Layer):
                                                symbol_names=self.params,
                                                symbol_values=input_data,
                                                operators=self.measurement)
-        # reshape tensor of expectation values to
-        # shape [batch_size, n_horizontal_strides, n_vertical_strides,n_input_channels] and return
+        # reshape tensor of expectation value
         output = tf.reshape(output, shape=[-1, self.num_x, self.num_y, self.n_input_channels])
         if self.classical_weights:
             output = tf.math.multiply(output,self.channel_weights)
@@ -623,14 +581,11 @@ class Q_U1_control(tf.keras.layers.Layer):
         for i in range(self.num_x):
             for j in range(self.num_y):
 
-                # collecting image data superimposed with kernel
-                # size = [batch_size, output_height, output_width, n_input_channels]
                 slice_part = tf.slice(inputs, [0, i, j, 0], [-1, 2, 2, -1])
 
                 # reshape to [batch_size, n_strides, filter_size, filter_size, n_input_channels]
                 slice_part = tf.reshape(slice_part, shape=[-1, 1, 2, 2, self.n_input_channels])
 
-                # if this is first stride, define new variable
                 if stack_set == None:
                     stack_set = slice_part
 
@@ -642,10 +597,8 @@ class Q_U1_control(tf.keras.layers.Layer):
         stack_set = tf.transpose(stack_set, perm=[0, 1, 4, 2, 3])
 
         # reshape to [batch_size*n_strides*n_input_channels, filter_size*filter_size]
-        # each column corresponds to kernel's view of image, rows are ordered
         stack_set = tf.reshape(stack_set, shape=[-1, 2**2])
 
-        # create new tensor by tiling circuit values for each data point in batch
         circuit_batch = tf.tile([self.circuit_tensor], [tf.shape(inputs)[0], 1])
 
         # flatten circuit tensor
@@ -656,19 +609,13 @@ class Q_U1_control(tf.keras.layers.Layer):
         outputs = []
         for i in range(self.n_kernels):
 
-            # create new tensor by tiling kernel values for each stride for each
-            # data point in the batch
             controller = tf.tile(self.kernel[i], [tf.shape(inputs)[0]*self.num_x*self.num_y, 1])
 
-            # append to a list the expectations for all input data in the batch,
-            # outputs is of shape [batch_size, n_horizontal_strides, n_vertical_strides]
+            # append to a list the expectations for all input data in the batch
             outputs.append(self.get_expectations(stack_set, controller, circuit_batch))
 
         # stack the expectation values for each kernel
-        # shape is [batch_size, n_horizontal_strides, n_vertical_strides, n_kernels]
         output_tensor = tf.stack(outputs, axis=3)
-
-        # take arccos of expectation and divide by pi to un-embed
         # if values are less than -1 or greater than 1, make -1 or 1, respectively
         output_tensor = tf.math.acos(tf.clip_by_value(output_tensor, -1+1e-5, 1-1e-5)) / np.pi
 

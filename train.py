@@ -14,7 +14,7 @@ print("~~~~~~~~~~~MENU~~~~~~~~~~~~~")
 print("1: COLORS")
 print("2: COLORS_SHAPE")
 print("3: CIFAR-10")
-print("Note: Run create_noisy_colors.py if first time running software")
+print("Note: Run create_noisy_colors.py first if you want to check with synthetic data too.")
 try:
     datamenu1 = int(input('Choose dataset to train on (enter number): '))
 except:

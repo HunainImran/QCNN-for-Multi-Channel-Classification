@@ -120,12 +120,10 @@ def build_model_datasets(datatype,details,num_of_classes):
         return x_train, x_test, y_train, y_test, classes
 
     if datatype == "COLORS" or datatype == "COLORS_SHAPE":
-        # set directory and classes for COLORS dataset
         if datatype == "COLORS":
             data_dir = './mixed_colors/noisy_colors'
             classes = ['blue','cyan','cyan_tert','green','magenta','magenta_tert','red','yellow','yellow_tert']
         
-        # set directory and classes for COLORS_SHAPE dataset
         if datatype == "COLORS_SHAPE":
             data_dir = './mixed_colors_shapes/noisy_colors'
             classes = ['blue','blue_corner','blue_plus','blue_x',
@@ -143,7 +141,6 @@ def build_model_datasets(datatype,details,num_of_classes):
             shuffle=True,
             image_size=(resize_x, resize_y))
 
-        # infer class names from directory
         class_names = dataset.class_names
         
         # split the dataset into train and test data
@@ -182,11 +179,9 @@ def build_model_datasets(datatype,details,num_of_classes):
         # number of channels to add scalar to for each class
         classes_to_add_to = channels-n_classes+1
 
-        # calculate the number of tensors in each class to be evenly distributed
         train_class_size = int(datasize(datatype,num_of_classes)[0]/n_classes)
         test_class_size = int(datasize(datatype,num_of_classes)[1]/n_classes)
         
-        # create empty tensor of size (?,resize_x,resize_y,channels)
         x_train = np.array([], dtype=np.int64).reshape(0,resize_x,resize_y,channels)
         y_train = np.array([]*train_class_size)
         x_test = np.array([], dtype=np.int64).reshape(0,resize_x,resize_y,channels)
@@ -195,17 +190,14 @@ def build_model_datasets(datatype,details,num_of_classes):
         # create synthetic training and testing data and labels
         for i in range(n_classes):
         
-            # populate tensor of size (train_class_size,resize_x,resize_y,channels) with random numbers between 0 and 1
             x_training_class = np.random.rand(train_class_size,resize_x,resize_y,channels)
             
-            # assign one hot encoded label
             y_training_class = np.array([i]*train_class_size)
             
             # create test sets similarly
             x_test_class = np.random.rand(test_class_size,resize_x,resize_y,channels)
             y_test_class = np.array([i]*test_class_size)
             
-            # add 0.5 to the relevant channels to differentitate them
             for j in range(classes_to_add_to):
                 x_training_class[...,i+j] += 0.5 
                 x_test_class[...,i+j] += 0.5 

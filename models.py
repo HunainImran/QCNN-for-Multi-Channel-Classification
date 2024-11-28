@@ -6,12 +6,10 @@ from cirq.contrib.svg import circuit_to_svg
 from tensorflow.keras import datasets, layers, models
 
 from circuits import U1_circuit, Q_U1_control, U1_Modified_circuit
-# , U2_circuit, Q_U2_control 
-
 ###########################
 # build quantum convolutional neural network
 def CO_U1_QCNN_model(datatype,classes):
-# conditionally set input layer and quantum layer depending on the dataset
+
     def plot_circuit(circuit, save_path="circuit_diagram.svg"):
         """
         Visualizes and saves a quantum circuit as an SVG file.
@@ -64,7 +62,6 @@ def CO_U1_QCNN_model(datatype,classes):
 ###########################
 # build quantum convolutional neural network
 def MODIFIED_CO_U1_QCNN_model(datatype,classes):
-# conditionally set input layer and quantum layer depending on the dataset
     def plot_circuit(circuit, save_path="circuit_diagram.svg"):
         """
         Visualizes and saves a quantum circuit as an SVG file.

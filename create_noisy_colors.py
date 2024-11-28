@@ -19,7 +19,6 @@ for path in paths:
       os.mkdir(path+"noisy_colors/"+str(i))
 
 # load the image and convert into numpy array
-# asarray() class is used to convert PIL images into NumPy arrays
       numpydata_pure = np.asarray(Image.open(path+colors[i]).convert('RGB')).copy()
 
 # percent of pixels to corrupt to black
